@@ -8,7 +8,7 @@ on:
       - "config/b1_matrix_probe.overlay"
       - ".github/workflows/build-matrix-probe.yml"
       - "0001-esb-nrf-fix.patch"
-
+      
 permissions:
   contents: read
 
