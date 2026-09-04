@@ -1,18 +1,13 @@
 /*
- * Keychron B1 Pro newer-hardware matrix override
+ * Keychron B1 Pro newer-hardware matrix override.
  *
- * Derived from a full 77-key physical sweep on the user's B1P-K1 keyboard.
- *
- * This shield is loaded after Keychron's normal keychron_b1_us shield:
+ * Verified on B1P-K1 hardware by a complete 77-key physical matrix sweep.
+ * Loaded after Keychron's normal keychron_b1_us shield:
  *
  *   SHIELD="keychron_b1_us b1_new_hw"
  *
- * It changes only:
- *   - matrix scan direction/electrical GPIO roles to row2col
- *   - matrix transform to the measured physical-key mapping
- *
- * Logical key order is identical to Keychron's stock B1 US keymap:
- *   77 typing keys, followed by the 5 direct-input positions.
+ * Logical key order remains identical to Keychron's stock B1 US keymap:
+ * 77 keyboard positions followed by the 5 direct-input positions.
  */
 
 #include <dt-bindings/gpio/gpio.h>
