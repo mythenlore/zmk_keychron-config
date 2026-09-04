@@ -43,9 +43,11 @@ jobs:
             -DKEYMAP_FILE=${GITHUB_WORKSPACE}/config/b1_matrix_probe.keymap \
             -DEXTRA_DTC_OVERLAY_FILE=${GITHUB_WORKSPACE}/config/b1_matrix_probe.overlay
 
-      - name: Upload matrix probe firmware
+      - name: Upload probe diagnostics
         uses: actions/upload-artifact@v5
         with:
-          name: keychron-b1-reverse-scan-probe
-          path: build-probe/zephyr/zmk.uf2
-          if-no-files-found: error
+          name: keychron-b1-probe-diagnostics
+          path: |
+            build-probe/zephyr/zmk.uf2
+            build-probe/zephyr/zephyr.dts
+            build-probe/zephyr/.config
