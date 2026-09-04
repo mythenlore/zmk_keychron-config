@@ -1,4 +1,4 @@
-name: Build B1 Matrix Probe
+name: Build B1 Reverse-Scan Probe
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
       - "config/b1_matrix_probe.overlay"
       - ".github/workflows/build-matrix-probe.yml"
       - "0001-esb-nrf-fix.patch"
-      
+
 permissions:
   contents: read
 
@@ -46,6 +46,6 @@ jobs:
       - name: Upload matrix probe firmware
         uses: actions/upload-artifact@v5
         with:
-          name: keychron-b1-matrix-probe
+          name: keychron-b1-reverse-scan-probe
           path: build-probe/zephyr/zmk.uf2
           if-no-files-found: error
