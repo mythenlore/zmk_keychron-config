@@ -1,11 +1,60 @@
 /*
- * Keychron B1 Pro full-matrix probe overlay
+ * Keychron B1 Pro matrix probe — reverse scan direction
  *
- * Replaces the B1 shield's normal sparse matrix transform with an
- * identity-style transform covering all 8x18 matrix coordinates plus
- * the five direct GPIO inputs at composite row 8.
+ * Diagnostic experiment:
+ *   - same 8 row pins
+ *   - same 18 column pins
+ *   - change diode-direction from col2row to row2col
+ *   - move pull-downs to the input side of the scanner
+ *   - retain the exhaustive 8x18 + direct-GPIO transform
+ *
+ * This tests whether the newer B1 Pro PCB is electrically scanned in the
+ * opposite direction while reusing the same GPIO pool.
  */
+
+#include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/zmk/matrix_transform.h>
+
+&kscan0 {
+    diode-direction = "row2col";
+
+    /*
+     * In row2col mode the rows are driven and the columns are read.
+     * Keep the driven side plain ACTIVE_HIGH and put pull-downs on
+     * the input side.
+     */
+    row-gpios
+        = <&gpio1 0 GPIO_ACTIVE_HIGH>
+        , <&gpio1 1 GPIO_ACTIVE_HIGH>
+        , <&gpio1 2 GPIO_ACTIVE_HIGH>
+        , <&gpio1 4 GPIO_ACTIVE_HIGH>
+        , <&gpio1 6 GPIO_ACTIVE_HIGH>
+        , <&gpio1 7 GPIO_ACTIVE_HIGH>
+        , <&gpio1 10 GPIO_ACTIVE_HIGH>
+        , <&gpio1 12 GPIO_ACTIVE_HIGH>
+        ;
+
+    col-gpios
+        = <&gpio0 0  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 1  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 26 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 27 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 4  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 5  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 6  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 7  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 8  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 12 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 14 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 16 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 17 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        ;
+};
 
 &default_transform {
     columns = <18>;

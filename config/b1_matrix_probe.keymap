@@ -198,7 +198,7 @@
 
         probe_bootloader {
             timeout-ms = <1000>;
-            key-positions = <45 116>;
+            key-positions = <40 72>;
             bindings = <&long_press_bootloader 0 0>;
         };
     };
