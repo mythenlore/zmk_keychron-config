@@ -1,2 +1,0 @@
-config SHIELD_B1_MATRIX_PROBE
-    def_bool $(shields_list_contains,b1_matrix_probe)
