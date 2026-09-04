@@ -33,6 +33,9 @@ jobs:
       - name: Fetch Zephyr modules
         run: west update
 
+      - name: Export Zephyr CMake package
+        run: west zephyr-export
+
       - name: Build Keychron B1 Pro
         run: |
           west build -s zmk/app -d build -b keychron -p always -- \
