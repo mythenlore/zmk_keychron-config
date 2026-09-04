@@ -1,0 +1,51 @@
+name: Build B1 Matrix Probe
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "config/b1_matrix_probe.keymap"
+      - "config/b1_matrix_probe.overlay"
+      - ".github/workflows/build-matrix-probe.yml"
+      - "0001-esb-nrf-fix.patch"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: docker.io/zmkfirmware/zmk-build-arm:3.2
+
+    steps:
+      - name: Checkout config
+        uses: actions/checkout@v5
+
+      - name: Initialize West workspace
+        run: west init -l config
+
+      - name: Fetch Zephyr modules
+        run: west update
+
+      - name: Export Zephyr CMake package
+        run: west zephyr-export
+
+      - name: Apply Keychron 2.4 GHz patch
+        run: git -C zephyr apply ../0001-esb-nrf-fix.patch
+
+      - name: Build matrix probe firmware
+        run: |
+          west build -s zmk/app -d build-probe -b keychron -p always -- \
+            -DSHIELD=keychron_b1_us \
+            -DZMK_CONFIG=${GITHUB_WORKSPACE}/config \
+            -DKEYMAP_FILE=${GITHUB_WORKSPACE}/config/b1_matrix_probe.keymap \
+            -DEXTRA_DTC_OVERLAY_FILE=${GITHUB_WORKSPACE}/config/b1_matrix_probe.overlay
+
+      - name: Upload matrix probe firmware
+        uses: actions/upload-artifact@v5
+        with:
+          name: keychron-b1-matrix-probe
+          path: build-probe/zephyr/zmk.uf2
+          if-no-files-found: error
