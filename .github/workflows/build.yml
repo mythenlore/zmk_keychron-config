@@ -1,5 +1,48 @@
-on: [push, pull_request, workflow_dispatch]
+name: Build Keychron B1 Pro
+
+on:
+  push:
+    paths:
+      - "config/**"
+      - ".github/workflows/build.yml"
+      - "build.yaml"
+  pull_request:
+    paths:
+      - "config/**"
+      - ".github/workflows/build.yml"
+      - "build.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    runs-on: ubuntu-latest
+
+    container:
+      image: docker.io/zmkfirmware/zmk-build-arm:3.2
+
+    steps:
+      - name: Checkout config
+        uses: actions/checkout@v5
+
+      - name: Initialize West workspace
+        run: west init -l config
+
+      - name: Fetch Zephyr modules
+        run: west update
+
+      - name: Build Keychron B1 Pro
+        run: |
+          west build -s zmk/app -d build -b keychron -p always -- \
+            -DSHIELD=keychron_b1_us \
+            -DZMK_CONFIG=${GITHUB_WORKSPACE}/config \
+            -DKEYMAP_FILE=${GITHUB_WORKSPACE}/config/keychron_b1_us.keymap
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v5
+        with:
+          name: keychron-b1-pro-test
+          path: build/zephyr/zmk.uf2
+          if-no-files-found: error
