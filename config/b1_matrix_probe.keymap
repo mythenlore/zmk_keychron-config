@@ -177,31 +177,9 @@
     ZMK_MACRO(probe_r8c03, bindings = <&kp R &kp N8 &kp C &kp N0 &kp N3 &kp SPACE>;)
     ZMK_MACRO(probe_r8c04, bindings = <&kp R &kp N8 &kp C &kp N0 &kp N4 &kp SPACE>;)
 
-    /* Preserve an easy bootloader path.
-     * Under the old B1 transform, physical Fn and '-' are RC(2,9)
-     * and RC(6,8). Since Fn + '-' still worked on the user's newer
-     * keyboard, these raw coordinates are known-good.
+    /* Diagnostic firmware intentionally has no software bootloader combo.
+     * Use the B1 Pro recessed hardware bootloader/reset button for recovery.
      */
-    ZMK_MACRO(en_bootloader, bindings = <&bootloader>;)
-
-    long_press_bootloader: long_press_bootloader {
-        compatible = "zmk,behavior-hold-tap";
-        label = "MATRIX_PROBE_BOOT";
-        #binding-cells = <2>;
-        flavor = "tap-preferred";
-        tapping-term-ms = <3000>;
-        bindings = <&en_bootloader>, <&none>;
-    };
-
-    combos {
-        compatible = "zmk,combos";
-
-        probe_bootloader {
-            timeout-ms = <1000>;
-            key-positions = <40 72>;
-            bindings = <&long_press_bootloader 0 0>;
-        };
-    };
 
     keymap {
         compatible = "zmk,keymap";

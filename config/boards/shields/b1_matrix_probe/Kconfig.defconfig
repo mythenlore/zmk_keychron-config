@@ -1,0 +1,6 @@
+if SHIELD_B1_MATRIX_PROBE
+
+config ZMK_KEYBOARD_NAME
+    default "B1 Probe"
+
+endif
