@@ -6,11 +6,13 @@ on:
       - "config/**"
       - ".github/workflows/build.yml"
       - "build.yaml"
+      - "0001-esb-nrf-fix.patch"
   pull_request:
     paths:
       - "config/**"
       - ".github/workflows/build.yml"
       - "build.yaml"
+      - "0001-esb-nrf-fix.patch"
   workflow_dispatch:
 
 permissions:
@@ -35,6 +37,9 @@ jobs:
 
       - name: Export Zephyr CMake package
         run: west zephyr-export
+
+      - name: Apply Keychron 2.4 GHz patch
+        run: git -C zephyr apply ../0001-esb-nrf-fix.patch
 
       - name: Build Keychron B1 Pro
         run: |
