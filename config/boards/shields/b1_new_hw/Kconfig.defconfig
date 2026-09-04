@@ -1,0 +1,6 @@
+if SHIELD_B1_NEW_HW
+
+config ZMK_KEYBOARD_NAME
+    default "Keychron B1 Pro"
+
+endif
