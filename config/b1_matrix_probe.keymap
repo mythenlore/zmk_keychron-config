@@ -19,6 +19,14 @@
 #include <dt-bindings/zmk/outputs.h>
 
 / {
+    /*
+     * Keychron's behavior_outputs node is declared /omit-if-no-ref/.
+     * Several Keychron-specific source files call helper functions that are
+     * implemented by behavior_outputs.c, so keep a DT reference to &out even
+     * though the diagnostic layer itself does not use output switching.
+     */
+    ZMK_MACRO(probe_keep_outputs, bindings = <&out OUT_BLE>;)
+
     ZMK_MACRO(probe_r0c00, bindings = <&kp R &kp N0 &kp C &kp N0 &kp N0 &kp SPACE>;)
     ZMK_MACRO(probe_r0c01, bindings = <&kp R &kp N0 &kp C &kp N0 &kp N1 &kp SPACE>;)
     ZMK_MACRO(probe_r0c02, bindings = <&kp R &kp N0 &kp C &kp N0 &kp N2 &kp SPACE>;)
