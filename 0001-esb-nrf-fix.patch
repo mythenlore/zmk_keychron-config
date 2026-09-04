@@ -23,7 +23,7 @@ index c0b661007..c2014c3ba 100644
 +			usb_sof_count ++;
  		}
  		break;
-
+ 
 diff --git a/subsys/bluetooth/controller/ll_sw/nordic/lll/lll.c b/subsys/bluetooth/controller/ll_sw/nordic/lll/lll.c
 index e3ce60282..5bfe7d38d 100644
 --- a/subsys/bluetooth/controller/ll_sw/nordic/lll/lll.c
@@ -31,7 +31,7 @@ index e3ce60282..5bfe7d38d 100644
 @@ -84,7 +84,11 @@ static void ticker_op_job_disable(uint32_t status, void *op_context);
  #endif
  #endif /* CONFIG_BT_CTLR_LOW_LAT */
-
+ 
 +#if defined(CONFIG_DYNAMIC_DIRECT_INTERRUPTS)
 +static void radio_nrf5_isr(const void *arg)
 +#else /* !CONFIG_DYNAMIC_DIRECT_INTERRUPTS */
@@ -39,19 +39,19 @@ index e3ce60282..5bfe7d38d 100644
 +#endif /* !CONFIG_DYNAMIC_DIRECT_INTERRUPTS */
  {
  	DEBUG_RADIO_ISR(1);
-
+ 
 @@ -97,7 +101,9 @@ ISR_DIRECT_DECLARE(radio_nrf5_isr)
  	lll_prof_exit_radio();
-
+ 
  	DEBUG_RADIO_ISR(0);
 +#if !defined(CONFIG_DYNAMIC_DIRECT_INTERRUPTS)
  	return 1;
 +#endif /* !CONFIG_DYNAMIC_DIRECT_INTERRUPTS */
  }
-
+ 
  static void rtc0_nrf5_isr(const void *arg)
 @@ -183,7 +189,27 @@ int lll_init(void)
-
+ 
  	/* Initialize SW IRQ structure */
  	hal_swi_init();
 +#if defined(CONFIG_DYNAMIC_INTERRUPTS)
@@ -73,6 +73,7 @@ index e3ce60282..5bfe7d38d 100644
 +	irq_connect_dynamic(HAL_SWI_JOB_IRQ, CONFIG_BT_CTLR_ULL_LOW_PRIO,
 +			    swi_ull_low_nrf5_isr, NULL, 0U);
 +#endif
+ 
 +#else /* !CONFIG_DYNAMIC_INTERRUPTS */
  	/* Connect ISRs */
  	IRQ_DIRECT_CONNECT(RADIO_IRQn, CONFIG_BT_CTLR_LLL_PRIO,
@@ -83,17 +84,16 @@ index e3ce60282..5bfe7d38d 100644
  #endif
 -
 +#endif /* !CONFIG_DYNAMIC_INTERRUPTS */
-+
++	
  	/* Enable IRQs */
  	irq_enable(RADIO_IRQn);
  	irq_enable(RTC0_IRQn);
-
 diff --git a/subsys/bluetooth/services/bas.c b/subsys/bluetooth/services/bas.c
 index cf6482d53..ead09c15a 100644
 --- a/subsys/bluetooth/services/bas.c
 +++ b/subsys/bluetooth/services/bas.c
 @@ -95,5 +95,19 @@ int bt_bas_set_battery_level(uint8_t level)
-
+ 
  	return rc == -ENOTCONN ? 0 : rc;
  }
 +//add by cwl @2023/11/23
@@ -110,7 +110,7 @@ index cf6482d53..ead09c15a 100644
 +
 +	return rc == -ENOTCONN ? 0 : rc;
 +}
-
+ 
  SYS_INIT(bas_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
---
+-- 
 2.42.0.windows.2
